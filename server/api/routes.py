@@ -63,5 +63,5 @@ def create():
 
     # success
     return jsonify({
-        "url":  request.host + generate_url(shortlink),
+        "url":  request.host_url + generate_url(shortlink),
     })

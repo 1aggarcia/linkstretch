@@ -5,9 +5,9 @@ import urllib.parse
 from cryptography.fernet import Fernet
 
 ALPHANUMERIC_CHARS = string.ascii_uppercase + string.digits
-CIPHER_LEN = 700
+CIPHER_LEN = 12
 
-ENDPOINT = "/links/navigate"
+ENDPOINT = "links/navigate"
 
 # public functions
 
@@ -47,12 +47,13 @@ def _format_url(length: int, ciphertext: str, key: bytes):
 
 
 def _encrypt(text: str, key: bytes):
-    # TODO: don't pad very long strings
-    if len(text) > CIPHER_LEN:
-        raise ReferenceError("Unimplemented")
+    padded_text = text
 
-    padding = CIPHER_LEN - len(text)
-    padded_text = text + _random_string(padding)
+    if len(text) < CIPHER_LEN:
+        # pad text to full length with random characters
+        padding = CIPHER_LEN - len(text)
+        padded_text += _random_string(padding)
+
     raw_bytes = Fernet(key).encrypt(padded_text.encode())
 
     return raw_bytes.decode()  # convert to string
