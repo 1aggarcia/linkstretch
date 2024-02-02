@@ -1,0 +1,53 @@
+from flask import Blueprint, redirect, request, jsonify
+from .linkgen import generate_url, decode_url
+
+links_blueprint = Blueprint('links_blueprint', __name__)
+
+
+# GET methods
+
+@links_blueprint.route("/count", methods=["GET"])
+def count():
+    return "ERROR: No count avaliable", 500
+
+
+@links_blueprint.route("/navigate", methods=["GET"])
+def navigate():
+    # TODO: type checking
+    key = request.args.get("key")
+    if key is None:
+        return 'BAD REQUEST: Missing param "key"', 400
+
+    length = request.args.get("length")
+    if length is None:
+        return 'BAD REQUEST: Missing param "length"', 400
+
+    ciphertext = request.args.get("ciphertext")
+    if ciphertext is None:
+        return 'BAD REQUEST: Missing param "ciphertext"', 400
+
+    try:
+        shortlink = decode_url(ciphertext, int(length), key.encode())
+        return redirect(shortlink)
+    except Exception:
+        return "ERROR: Unknown", 500
+
+
+# POST methods
+
+@links_blueprint.route("/create", methods=["POST"])
+def create():
+    if not request.is_json:
+        return "BAD REQUEST: JSON expected", 400
+    body = request.get_json()
+
+    # TODO: type checking
+    shortlink = body.get("shortlink")
+    if shortlink is None:
+        return 'BAD REQUEST: Missing body param "shortlink"', 400
+
+    url = generate_url(shortlink)
+
+    return jsonify({
+        "url": url,
+    })
