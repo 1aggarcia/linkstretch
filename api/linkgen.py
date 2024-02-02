@@ -25,6 +25,16 @@ def decode_url(ciphertext: str, length: int, key: bytes):
     return full_text[:length]
 
 
+def is_url(text: str):
+    try:
+        # use library function to split text as if it were a URL
+        parsed = urllib.parse.urlparse(text)
+        # check that the first two parts <scheme>://<netloc> are there
+        return all([parsed.scheme, parsed.netloc])
+    except ValueError:
+        return False
+
+
 # private helpers
 
 def _format_url(length: int, ciphertext: str, key: bytes):

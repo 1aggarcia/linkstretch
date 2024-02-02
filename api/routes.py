@@ -1,8 +1,10 @@
 from flask import Blueprint, redirect, request, jsonify
-from .linkgen import generate_url, decode_url
+from .linkgen import generate_url, decode_url, is_url
+
+MAX_LEN = 1000
+
 
 links_blueprint = Blueprint('links_blueprint', __name__)
-
 
 # GET methods
 
@@ -39,12 +41,18 @@ def navigate():
 def create():
     if not request.is_json:
         return "BAD REQUEST: JSON expected", 400
-    body = request.get_json()
 
-    # TODO: type checking
+    body = request.get_json()
     shortlink = body.get("shortlink")
+
     if shortlink is None:
         return 'BAD REQUEST: Missing body param "shortlink"', 400
+    if not isinstance(shortlink, str):
+        return 'BAD REQUEST: param "shortlink" is not a string', 400
+    if len(shortlink) > MAX_LEN:
+        return 'BAD REQUEST: param "shortlink" is too long', 400
+    if not is_url(shortlink):
+        return 'BAD REQUEST: param "shortlink" is not a URL', 400
 
     return jsonify({
         "url":  request.host + generate_url(shortlink),
