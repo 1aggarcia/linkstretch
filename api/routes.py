@@ -15,7 +15,7 @@ def count():
 
 @links_blueprint.route("/navigate", methods=["GET"])
 def navigate():
-    # TODO: type checking
+    # validate arguments
     key = request.args.get("key")
     if key is None:
         return 'BAD REQUEST: Missing param "key"', 400
@@ -28,11 +28,16 @@ def navigate():
     if ciphertext is None:
         return 'BAD REQUEST: Missing param "ciphertext"', 400
 
+    # decode the link with given arguments, catch any errors
     try:
         shortlink = decode_url(ciphertext, int(length), key.encode())
-        return redirect(shortlink)
-    except Exception:
-        return "ERROR: Unknown", 500
+    except ValueError:
+        return "BAD REQUEST: Link improperly encoded", 400
+
+    if not is_url(shortlink):
+        return "BAD REQUEST: Link points to an invalid URL", 400
+
+    return redirect(shortlink)
 
 
 # POST methods
@@ -45,6 +50,7 @@ def create():
     body = request.get_json()
     shortlink = body.get("shortlink")
 
+    # validate shortlink
     if shortlink is None:
         return 'BAD REQUEST: Missing body param "shortlink"', 400
     if not isinstance(shortlink, str):
