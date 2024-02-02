@@ -10,7 +10,7 @@ links_blueprint = Blueprint('links_blueprint', __name__)
 
 @links_blueprint.route("/count", methods=["GET"])
 def count():
-    return "ERROR: No count avaliable", 500
+    return "INTERNAL ERROR: No count avaliable", 500
 
 
 @links_blueprint.route("/navigate", methods=["GET"])
@@ -37,6 +37,7 @@ def navigate():
     if not is_url(shortlink):
         return "BAD REQUEST: Link points to an invalid URL", 400
 
+    # success
     return redirect(shortlink)
 
 
@@ -45,7 +46,7 @@ def navigate():
 @links_blueprint.route("/create", methods=["POST"])
 def create():
     if not request.is_json:
-        return "BAD REQUEST: JSON expected", 400
+        return "BAD REQUEST: JSON body expected", 400
 
     body = request.get_json()
     shortlink = body.get("shortlink")
@@ -60,6 +61,7 @@ def create():
     if not is_url(shortlink):
         return 'BAD REQUEST: param "shortlink" is not a URL', 400
 
+    # success
     return jsonify({
         "url":  request.host + generate_url(shortlink),
     })

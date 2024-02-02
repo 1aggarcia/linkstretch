@@ -19,10 +19,8 @@ def generate_url(shortlink: str):
 
 
 def decode_url(ciphertext: str, length: int, key: bytes):
-    # TODO: validate url
-    full_text = _decrypt(ciphertext, key)
-
-    return full_text[:length]
+    # use only the first `length ` characters of the decoded url
+    return _decrypt(ciphertext, key)[:length]
 
 
 def is_url(text: str):
@@ -49,6 +47,7 @@ def _format_url(length: int, ciphertext: str, key: bytes):
 
 
 def _encrypt(text: str, key: bytes):
+    # TODO: don't pad very long strings
     if len(text) > CIPHER_LEN:
         raise ReferenceError("Unimplemented")
 
