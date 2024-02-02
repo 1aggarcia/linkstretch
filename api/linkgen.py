@@ -7,9 +7,6 @@ from cryptography.fernet import Fernet
 ALPHANUMERIC_CHARS = string.ascii_uppercase + string.digits
 CIPHER_LEN = 700
 
-DEV_MODE = True
-
-DOMAIN = "http://127.0.0.1:5000" if DEV_MODE else "https://linkstretch.vercel.app/"
 ENDPOINT = "/links/navigate"
 
 # public functions
@@ -35,7 +32,7 @@ def _format_url(length: int, ciphertext: str, key: bytes):
     url_ciphertext = urllib.parse.quote(ciphertext)
     url_key = urllib.parse.quote(key)
 
-    return f"{DOMAIN}{ENDPOINT}" \
+    return f"{ENDPOINT}" \
         + f"?key={url_key}" \
         + f"&length={length}" \
         + f"&ciphertext={url_ciphertext}"

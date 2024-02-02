@@ -12,7 +12,11 @@ CORS(app)
 
 @app.route("/")
 def root():
+    if app.debug:
+        return "Server Running in Debug Mode"
+
     return redirect(MAIN_PAGE)
+
 
 # To run: python -m api.main
 if __name__ == "__main__":

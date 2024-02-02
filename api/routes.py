@@ -46,8 +46,6 @@ def create():
     if shortlink is None:
         return 'BAD REQUEST: Missing body param "shortlink"', 400
 
-    url = generate_url(shortlink)
-
     return jsonify({
-        "url": url,
+        "url":  request.host + generate_url(shortlink),
     })
