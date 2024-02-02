@@ -1,8 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useState, useEffect, useRef } from "react";
 import Loading from "./Loading";
-import { createLinkAsync } from "../api-service";
-import Counter from "./Counter";
+import { createLinkAsync, shortlinkKey } from "../api-service";
 import Error from "./Error";
 
 const textAreaRows = 10;
@@ -15,7 +14,10 @@ export default function Processser({ link, startOver }) {
 
     useEffect(() => {
         createLinkAsync(link)
-            .then(setLongLink)
+            .then((link) => {
+                setLongLink(link);
+                sessionStorage.removeItem(shortlinkKey);
+            })
             .catch(() => setError(true));
     }, [])
 
@@ -41,6 +43,5 @@ export default function Processser({ link, startOver }) {
             placeholder="Output"
         />
         <button onClick={startOver}>Start Over</button>
-        <Counter />
     </>)
 }

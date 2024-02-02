@@ -3,7 +3,7 @@ import { getCountAsync } from "../api-service";
 
 const repoLink = "https://github.com/1aggarcia/url_lengthener"
 
-export default function Counter() {
+export default function Footer() {
     const [count, setCount] = useState();
 
     useEffect(() => {
@@ -15,7 +15,7 @@ export default function Counter() {
     return (
         <div style={{margin: "17px 0"}}>
             <span style={{margin: "auto 10px"}}>
-                Total Links Generated: {count === undefined? "-" : count}
+                Total Links Generated: {count === undefined? "??" : count}
             </span>
             <a href={repoLink} style={{margin: "auto 10px"}}>
                 Source Code

@@ -1,14 +1,25 @@
 /* eslint-disable react/prop-types */
-import { useState } from "react";
-import Counter from "./Counter";
+import { useState, useEffect } from "react";
+import { shortlinkKey } from "../api-service";
 
 export default function Start({ generate }) {
     const [link, setLink] = useState('');
     const [submitEnabled, setSubmitEnabled] = useState(false);
 
+    useEffect(() => {
+        const saved = sessionStorage.getItem(shortlinkKey);
+        if (saved !== null && saved.length > 0) {
+            setLink(saved);
+            setSubmitEnabled(true);
+        }
+    }, [])
+
     function updateLink(e) {
-        setLink(e.target.value);
-        setSubmitEnabled(e.target.value.length > 0);
+        const newLink = e.target.value
+        setLink(newLink);
+
+        // Enable the submit button if there's text in the box
+        setSubmitEnabled(newLink.length > 0);
     }
 
     function validateLink(e) {
@@ -18,6 +29,7 @@ export default function Start({ generate }) {
             return;
         }
 
+        sessionStorage.setItem(shortlinkKey, link);
         generate(link);
     }
 
@@ -29,11 +41,15 @@ export default function Start({ generate }) {
         </p>
         <p>Just paste your link below:</p>
         <form className="centered" onSubmit={validateLink}>
-            <input type="text" placeholder="Paste link here" onChange={updateLink} />
+            <input 
+                type="text"
+                placeholder="Paste link here"
+                onChange={updateLink}
+                value={link}
+            />
             <button disabled={!submitEnabled}>
                 Lengthen
             </button>
         </form>
-        <Counter />
     </>);
 }

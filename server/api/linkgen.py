@@ -5,7 +5,7 @@ import urllib.parse
 from cryptography.fernet import Fernet
 
 ALPHANUMERIC_CHARS = string.ascii_uppercase + string.digits
-CIPHER_LEN = 12
+CIPHER_LEN = 700
 
 ENDPOINT = "links/navigate"
 

@@ -5,6 +5,8 @@ const domain = devMode? "http://127.0.0.1:5000" : "https://linkstretch.vercel.ap
 const createEndpoint = "/links/create";
 const countEndpoint = "/links/count";
 
+export const shortlinkKey = "shortlink";
+
 // TODO: error handling
 export async function getCountAsync() {
     const url = `${domain}${countEndpoint}`
