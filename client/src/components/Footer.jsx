@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { getCountAsync } from "../api-service";
 
-const repoLink = "https://github.com/1aggarcia/url_lengthener"
+const repoLink = "https://github.com/1aggarcia/linkstretch"
 
 export default function Footer() {
     const [count, setCount] = useState();

@@ -2,7 +2,7 @@ from flask import Flask, redirect
 from flask_cors import CORS
 from .routes import links_blueprint
 
-MAIN_PAGE = "https://homes.cs.washington.edu/~apolo/restricted/secret/"
+MAIN_PAGE = "https://homes.cs.washington.edu/~apolo/linkstretch/"
 
 
 app = Flask(__name__)
