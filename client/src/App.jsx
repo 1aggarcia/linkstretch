@@ -1,8 +1,10 @@
 import { useState } from 'react'
+
 import Start from './components/Start'
 import Processser from './components/Processer';
-import './assets/style.css'
 import Footer from './components/Footer';
+
+import './assets/style.css'
 
 export default function App() {
   return (

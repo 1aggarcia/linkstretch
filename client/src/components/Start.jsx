@@ -1,7 +1,9 @@
-/* eslint-disable react/prop-types */
 import { useState, useEffect } from "react";
 import { shortlinkKey } from "../api-service";
 
+/**
+ * @param {{generate: (string) => unknown}} props
+ */
 export default function Start({ generate }) {
     const [link, setLink] = useState('');
     const [submitEnabled, setSubmitEnabled] = useState(false);
