@@ -2,20 +2,20 @@ from flask import Flask, redirect
 from flask_cors import CORS
 from .routes import links_blueprint
 
-MAIN_PAGE = "https://homes.cs.washington.edu/~apolo/linkstretch/"
-
 
 app = Flask(__name__)
 app.register_blueprint(links_blueprint, url_prefix="/links")
 CORS(app)
 
 
-@app.route("/")
-def root():
-    if app.debug:
-        return "Server Running in Debug Mode"
+# This clashes with the static frontend at route "/"
 
-    return redirect(MAIN_PAGE)
+# @app.route("/")
+# def root():
+#     if app.debug:
+#         return "Server Running in Debug Mode"
+
+#     return redirect("https://homes.cs.washington.edu/~apolo/linkstretch/")
 
 
 # To run: python -m api.main
