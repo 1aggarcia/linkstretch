@@ -1,6 +1,6 @@
 {
   "rewrites": [
     { "source": "/links/(.*)", "destination": "/api/main" },
-    { "source": "/:path*", "destination": "/frontend/:path" }
+    { "source": "/(.*)", "destination": "/frontend/$1" }
   ]
 }
