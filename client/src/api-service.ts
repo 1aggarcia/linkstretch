@@ -1,17 +1,17 @@
-const devMode = false;
+const DEV_MODE = false;
 
-const domain = devMode
+const DOMAIN = DEV_MODE
   ? "http://127.0.0.1:5000"
   : "https://linkstretch.vercel.app";
 
-const createEndpoint = "/links/create";
-const countEndpoint = "/links/count";
+const CREATE_ENDPOINT = "/links/create";
+const COUNT_ENDPOINT = "/links/count";
 
 export const shortlinkKey = "shortlink";
 
 // TODO: error handling
 export async function getCountAsync() {
-  const url = `${domain}${countEndpoint}`;
+  const url = `${DOMAIN}${COUNT_ENDPOINT}`;
 
   try {
     const response = await fetch(url);
@@ -29,11 +29,11 @@ export async function getCountAsync() {
 }
 
 // TODO: error handling
-export async function createLinkAsync(shortlink) {
-  const url = `${domain}${createEndpoint}`;
+export async function createLinkAsync(shortlink: string): Promise<string> {
+  const requestUrl = `${DOMAIN}${CREATE_ENDPOINT}`;
 
   try {
-    const response = await fetch(url, {
+    const response = await fetch(requestUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -46,6 +46,12 @@ export async function createLinkAsync(shortlink) {
     }
 
     const jsonResponse = await response.json();
+    
+    if (typeof jsonResponse !== "object"
+        || typeof jsonResponse.url !== "string") {
+      throw new TypeError("500: Server response incorrectly formatted");
+    }
+  
     return jsonResponse.url;
 
   } catch (error) {

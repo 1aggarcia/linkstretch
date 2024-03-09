@@ -6,13 +6,18 @@ import { createLinkAsync, shortlinkKey } from "../api-service";
 
 const textAreaRows = 20;
 
-export default function Processser({ link, startOver }) {
+interface ProcesserProps {
+  link: string,
+  startOver: () => unknown,
+}
+
+export default function Processser(props: ProcesserProps) {
   const [error, setError] = useState(null);
   const [longLink, setLongLink] = useState("");
-  const textAreaRef = useRef(null);
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
-    createLinkAsync(link)
+    createLinkAsync(props.link)
       .then((link) => {
         setLongLink(link);
         sessionStorage.removeItem(shortlinkKey);
@@ -23,12 +28,16 @@ export default function Processser({ link, startOver }) {
   }, []);
 
   function copyResult() {
+    if (textAreaRef.current === null) {
+      return;
+    }
+
     textAreaRef.current.value = longLink;
     textAreaRef.current.select();
     navigator.clipboard.writeText(longLink);
   }
 
-  if (error) return <Error message={error} startOver={startOver} />;
+  if (error) return <Error message={error} startOver={props.startOver} />;
 
   if (longLink.length === 0) return <Loading />;
 
@@ -42,7 +51,7 @@ export default function Processser({ link, startOver }) {
         rows={textAreaRows}
         placeholder="Output"
       />
-      <button onClick={startOver}>Start Over</button>
+      <button onClick={props.startOver}>Start Over</button>
     </>
   );
 }

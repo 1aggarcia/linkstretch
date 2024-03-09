@@ -1,10 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, ChangeEvent, FormEvent } from "react";
 import { shortlinkKey } from "../api-service";
 
-/**
- * @param {{generate: (string) => unknown}} props
- */
-export default function Start({ generate }) {
+interface StartProps {
+    generate: (link: string) => unknown
+}
+
+export default function Start(props: StartProps) {
     const [link, setLink] = useState('');
     const [submitEnabled, setSubmitEnabled] = useState(false);
 
@@ -16,7 +17,7 @@ export default function Start({ generate }) {
         }
     }, [])
 
-    function updateLink(e) {
+    function updateLink(e: ChangeEvent<HTMLInputElement>) {
         const newLink = e.target.value
         setLink(newLink);
 
@@ -24,7 +25,7 @@ export default function Start({ generate }) {
         setSubmitEnabled(newLink.length > 0);
     }
 
-    function validateLink(e) {
+    function validateLink(e: FormEvent) {
         e.preventDefault();
         if (link.length < 1) {
             alert("Use a longer link");
@@ -32,7 +33,7 @@ export default function Start({ generate }) {
         }
 
         sessionStorage.setItem(shortlinkKey, link);
-        generate(link);
+        props.generate(link);
     }
 
     return (<>
