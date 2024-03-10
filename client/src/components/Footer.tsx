@@ -1,26 +1,17 @@
-// import { useEffect, useState } from "react"
-// import { getCountAsync } from "../api-service";
+import { useLinkCount } from "../hooks"
 
-const repoLink = "https://github.com/1aggarcia/linkstretch"
-const linkedIn = "https://www.linkedin.com/in/apolo-garcia/"
+const REPO_LINK = "https://github.com/1aggarcia/linkstretch"
 
 export default function Footer() {
-    // const [count, setCount] = useState();
-
-    // useEffect(() => {
-    //     getCountAsync()
-    //         .then(setCount)
-    //         .catch(() => setCount("??"));
-    // }, [])
+    const linkCount = useLinkCount();
 
     return (
-        <div style={{margin: "17px 0"}}>
-            <a href={repoLink} style={{margin: "auto 10px"}}>
-                Source Code
-            </a>
-            <a href={linkedIn} style={{margin: "auto 10px"}}>
-                LinkedIn
-            </a>
+        <div style={{margin: "17px 0px"}}>
+            <span>Links Generated: {linkCount}</span>
+            <span style={{margin: "auto 10px"}}>|</span>
+            <span>
+                <a href={REPO_LINK}>GitHub</a>
+            </span>
         </div>
     )
 }

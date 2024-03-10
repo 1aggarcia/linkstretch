@@ -1,4 +1,4 @@
-const DEV_MODE = false;
+const DEV_MODE = true;
 
 const DOMAIN = DEV_MODE
   ? "http://localhost:3000"
@@ -11,6 +11,7 @@ export const shortlinkKey = "shortlink";
 
 /**
  * Get the link count from the server
+ * 
  * @returns Promise resolving to the count,
  *  or rejecting if failure to get a response
  */
@@ -35,6 +36,7 @@ export async function getCountAsync(): Promise<number> {
 
 /**
  * Send a short link to the server to lengthen
+ * 
  * @returns Promise resolving to the long link,
  *  or rejecting if failure to get a response
  */
