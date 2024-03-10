@@ -1,6 +1,6 @@
 from flask import Blueprint, redirect, request, jsonify
 from .linkgen import generate_url, decode_url, is_url
-from .pantry import get_pantry
+from .pantry import get_stats_ref
 
 MAX_LEN = 1000
 
@@ -12,17 +12,11 @@ links_blueprint = Blueprint('links_blueprint', __name__)
 @links_blueprint.route("/count", methods=["GET"])
 def count():
     try:
-        pantry = get_pantry()
+        stats = get_stats_ref()
     except ReferenceError as e:
         return str(e), 404
 
-    curr_count = pantry.get_basket("count")
-    if curr_count is None:
-        curr_count = 0
-    elif not isinstance(curr_count, int):
-        return "Data from the database was malformed", 500
-
-    return jsonify({ "count": curr_count })
+    return jsonify({ "count": stats.get_link_count() })
 
 
 @links_blueprint.route("/navigate", methods=["GET"])
@@ -49,7 +43,13 @@ def navigate():
     if not is_url(shortlink):
         return "BAD REQUEST: Link points to an invalid URL", 400
 
-    # success
+    # Not yet counting visitors since it is a blocking call
+    # try:
+    #     stats = Stats(get_pantry_ref())
+    #     stats.count_visitor()
+    # except ReferenceError as e:
+    #     print(e)
+
     return redirect(shortlink)
 
 
@@ -73,7 +73,13 @@ def create():
     if not is_url(shortlink):
         return 'BAD REQUEST: param "shortlink" is not a URL', 400
 
-    # success
+    # success: count the new link
+    try:
+        stats = get_stats_ref()
+        stats.count_link()
+    except ReferenceError as e:
+        print(e)
+
     return jsonify({
         "url":  request.host_url + generate_url(shortlink),
     })
