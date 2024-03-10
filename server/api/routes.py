@@ -1,5 +1,6 @@
 from flask import Blueprint, redirect, request, jsonify
 from .linkgen import generate_url, decode_url, is_url
+from .pantry import get_pantry
 
 MAX_LEN = 1000
 
@@ -10,7 +11,18 @@ links_blueprint = Blueprint('links_blueprint', __name__)
 
 @links_blueprint.route("/count", methods=["GET"])
 def count():
-    return "INTERNAL ERROR: No count avaliable", 500
+    try:
+        pantry = get_pantry()
+    except ReferenceError as e:
+        return str(e), 404
+
+    curr_count = pantry.get_basket("count")
+    if curr_count is None:
+        curr_count = 0
+    elif not isinstance(curr_count, int):
+        return "Data from the database was malformed", 500
+
+    return jsonify({ "count": curr_count })
 
 
 @links_blueprint.route("/navigate", methods=["GET"])
