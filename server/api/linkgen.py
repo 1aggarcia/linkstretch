@@ -2,7 +2,7 @@ import string
 import random
 
 import urllib.parse
-from cryptography.fernet import Fernet
+from cryptography.fernet import Fernet, InvalidToken
 
 ALPHANUMERIC_CHARS = string.ascii_uppercase + string.digits
 CIPHER_LEN = 700
@@ -15,7 +15,14 @@ def generate_url(shortlink: str):
     key = Fernet.generate_key()
     ciphertext = _encrypt(shortlink, key)
 
-    return _format_url(len(shortlink), ciphertext, key)
+    # encode strings to URL format
+    url_ciphertext = urllib.parse.quote(ciphertext)
+    url_key = urllib.parse.quote(key)
+
+    return f"{ENDPOINT}" \
+        + f"?key={url_key}" \
+        + f"&length={len(shortlink)}" \
+        + f"&ciphertext={url_ciphertext}"
 
 
 def decode_url(ciphertext: str, length: int, key: bytes):
@@ -35,17 +42,6 @@ def is_url(text: str):
 
 # private helpers
 
-def _format_url(length: int, ciphertext: str, key: bytes):
-    # encode strings to URL format
-    url_ciphertext = urllib.parse.quote(ciphertext)
-    url_key = urllib.parse.quote(key)
-
-    return f"{ENDPOINT}" \
-        + f"?key={url_key}" \
-        + f"&length={length}" \
-        + f"&ciphertext={url_ciphertext}"
-
-
 def _encrypt(text: str, key: bytes):
     padded_text = text
 
@@ -60,7 +56,10 @@ def _encrypt(text: str, key: bytes):
 
 
 def _decrypt(ciphertext: str, key: bytes):
-    original_bytes = Fernet(key).decrypt(ciphertext.encode())
+    try:
+        original_bytes = Fernet(key).decrypt(ciphertext.encode())
+    except InvalidToken as exc:
+        raise ValueError("Improperly formatted data") from exc
 
     return original_bytes.decode()
 

@@ -10,7 +10,7 @@ links_blueprint = Blueprint('links_blueprint', __name__)
 
 @links_blueprint.route("/count", methods=["GET"])
 def count():
-    return "INTERNAL ERROR: No count avaliable", 500
+    return "SERVER ERROR: Unimplemented method"
 
 
 @links_blueprint.route("/navigate", methods=["GET"])
@@ -32,12 +32,11 @@ def navigate():
     try:
         shortlink = decode_url(ciphertext, int(length), key.encode())
     except ValueError:
-        return "BAD REQUEST: Link improperly encoded", 400
+        return "BAD REQUEST: Link is improperly encoded", 400
 
     if not is_url(shortlink):
         return "BAD REQUEST: Link points to an invalid URL", 400
 
-    # success
     return redirect(shortlink)
 
 
@@ -61,7 +60,6 @@ def create():
     if not is_url(shortlink):
         return 'BAD REQUEST: param "shortlink" is not a URL', 400
 
-    # success
     return jsonify({
         "url":  request.host_url + generate_url(shortlink),
     })
