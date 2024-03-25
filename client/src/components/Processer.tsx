@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 
 import Loading from "./Loading";
 import Error from "./Error";
-import { createLinkAsync, shortlinkKey } from "../api-service";
+import { createLinkAsync, shortlinkKey } from "../utils/api-service";
 
 const textAreaRows = 20;
 
@@ -37,10 +37,12 @@ export default function Processser(props: ProcesserProps) {
     navigator.clipboard.writeText(longLink);
   }
 
-  if (error) return <Error message={error} startOver={props.startOver} />;
-
-  if (longLink.length === 0) return <Loading />;
-
+  if (error !== null) {
+    return <Error message={error} startOver={props.startOver} />;
+  }
+  if (longLink.length === 0) {
+    return <Loading />;
+  }
   return (
     <>
       <p>Link successfully lengthened, copy below:</p>

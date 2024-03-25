@@ -1,11 +1,9 @@
 const DEV_MODE = true;
 
-const DOMAIN = DEV_MODE
-  ? "http://localhost:3000"
-  : "https://linkstretch.vercel.app";
+const DOMAIN = DEV_MODE ? "http://localhost:3000/" : "/";
 
-const CREATE_ENDPOINT = "/links/create";
-const COUNT_ENDPOINT = "/links/count";
+const CREATE_ENDPOINT = "links/create";
+const COUNT_ENDPOINT = "links/count";
 
 export const shortlinkKey = "shortlink";
 
@@ -19,7 +17,7 @@ export async function getCountAsync(): Promise<number> {
   const response = await fetch(`${DOMAIN}${COUNT_ENDPOINT}`);
 
   if (!response.ok) {
-    throw new Error(`Status: ${response.status}, ${await response.text()}`);
+    throw new Error(`HTTP Error: ${response.status}`);
   }
 
   const json: unknown = await response.json();

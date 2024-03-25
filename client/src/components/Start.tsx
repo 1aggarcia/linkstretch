@@ -1,5 +1,5 @@
 import { useState, useEffect, ChangeEvent, FormEvent } from "react";
-import { shortlinkKey } from "../api-service";
+import { shortlinkKey } from "../utils/api-service";
 
 interface StartProps {
     generate: (link: string) => unknown
