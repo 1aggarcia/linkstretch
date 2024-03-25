@@ -1,9 +1,5 @@
 const DEV_MODE = true;
-
 const DOMAIN = DEV_MODE ? "http://localhost:3000/" : "/";
-
-const CREATE_ENDPOINT = "links/create";
-const COUNT_ENDPOINT = "links/count";
 
 export const shortlinkKey = "shortlink";
 
@@ -14,7 +10,7 @@ export const shortlinkKey = "shortlink";
  *  or rejecting if failure to get a response
  */
 export async function getCountAsync(): Promise<number> {
-  const response = await fetch(`${DOMAIN}${COUNT_ENDPOINT}`);
+  const response = await fetch(`${DOMAIN}links/count`);
 
   if (!response.ok) {
     throw new Error(`HTTP Error: ${response.status}`);
@@ -39,7 +35,7 @@ export async function getCountAsync(): Promise<number> {
  *  or rejecting if failure to get a response
  */
 export async function createLinkAsync(shortlink: string): Promise<string> {
-  const requestUrl = `${DOMAIN}${CREATE_ENDPOINT}`;
+  const requestUrl = `${DOMAIN}links/create`;
   const response = await fetch(requestUrl, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -47,7 +43,7 @@ export async function createLinkAsync(shortlink: string): Promise<string> {
   });
 
   if (!response.ok) {
-    throw new Error(`HTTP Error: ${response.status}`);
+    throw new Error(`HTTP Error ${response.status}: ${await response.text()}`);
   }
 
   const json: unknown = await response.json();

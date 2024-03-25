@@ -1,6 +1,5 @@
 from flask import Blueprint, redirect, request, jsonify
 from .linkgen import generate_url, decode_url, is_url
-from .pantry import get_stats_ref
 
 MAX_LEN = 1000
 
@@ -11,12 +10,7 @@ links_blueprint = Blueprint('links_blueprint', __name__)
 
 @links_blueprint.route("/count", methods=["GET"])
 def count():
-    try:
-        stats = get_stats_ref()
-    except ReferenceError as e:
-        return str(e), 404
-
-    return jsonify({ "count": stats.get_link_count() })
+    return "SERVER ERROR: Unimplemented method"
 
 
 @links_blueprint.route("/navigate", methods=["GET"])
@@ -72,13 +66,6 @@ def create():
         return 'BAD REQUEST: param "shortlink" is too long', 400
     if not is_url(shortlink):
         return 'BAD REQUEST: param "shortlink" is not a URL', 400
-
-    # success: count the new link
-    try:
-        stats = get_stats_ref()
-        stats.count_link()
-    except ReferenceError as e:
-        print(e)
 
     return jsonify({
         "url":  request.host_url + generate_url(shortlink),
