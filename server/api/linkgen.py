@@ -2,7 +2,7 @@ import string
 import random
 
 import urllib.parse
-from cryptography.fernet import Fernet
+from cryptography.fernet import Fernet, InvalidToken
 
 ALPHANUMERIC_CHARS = string.ascii_uppercase + string.digits
 CIPHER_LEN = 700
@@ -60,7 +60,10 @@ def _encrypt(text: str, key: bytes):
 
 
 def _decrypt(ciphertext: str, key: bytes):
-    original_bytes = Fernet(key).decrypt(ciphertext.encode())
+    try:
+        original_bytes = Fernet(key).decrypt(ciphertext.encode())
+    except InvalidToken as exc:
+        raise ValueError("Improperly formatted data") from exc
 
     return original_bytes.decode()
 

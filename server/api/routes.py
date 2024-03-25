@@ -32,17 +32,10 @@ def navigate():
     try:
         shortlink = decode_url(ciphertext, int(length), key.encode())
     except ValueError:
-        return "BAD REQUEST: Link improperly encoded", 400
+        return "BAD REQUEST: Link is improperly encoded", 400
 
     if not is_url(shortlink):
         return "BAD REQUEST: Link points to an invalid URL", 400
-
-    # Not yet counting visitors since it is a blocking call
-    # try:
-    #     stats = Stats(get_pantry_ref())
-    #     stats.count_visitor()
-    # except ReferenceError as e:
-    #     print(e)
 
     return redirect(shortlink)
 

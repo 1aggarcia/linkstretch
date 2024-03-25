@@ -1,38 +1,29 @@
-import { useState, useEffect, ChangeEvent, FormEvent } from "react";
+import { useState, ChangeEvent, FormEvent } from "react";
 import { shortlinkKey } from "../utils/api-service";
+
+const MAX_LEN = 1000;
 
 interface StartProps {
     generate: (link: string) => unknown
 }
 
 export default function Start(props: StartProps) {
-    const [link, setLink] = useState('');
-    const [submitEnabled, setSubmitEnabled] = useState(false);
-
-    useEffect(() => {
-        const saved = sessionStorage.getItem(shortlinkKey);
-        if (saved !== null && saved.length > 0) {
-            setLink(saved);
-            setSubmitEnabled(true);
-        }
-    }, [])
+    const [link, setLink] = useState(getSavedLink());
+    const [submitEnabled, setSubmitEnabled] = useState(link.length > 0);
 
     function updateLink(e: ChangeEvent<HTMLInputElement>) {
         const newLink = e.target.value
-        setLink(newLink);
 
-        // Enable the submit button if there's text in the box
+        setLink(newLink);
         setSubmitEnabled(newLink.length > 0);
+        sessionStorage.setItem(shortlinkKey, newLink);
     }
 
     function validateLink(e: FormEvent) {
         e.preventDefault();
-        if (link.length < 1) {
-            alert("Use a longer link");
+        if (!isValidLink(link)) {
             return;
         }
-
-        sessionStorage.setItem(shortlinkKey, link);
         props.generate(link);
     }
 
@@ -55,4 +46,32 @@ export default function Start(props: StartProps) {
             </button>
         </form>
     </>);
+}
+
+function getSavedLink() {
+    const link = sessionStorage.getItem(shortlinkKey);
+
+    if (link === null || link.length === 0) {
+        return "";
+    }
+    return link;
+}
+
+function isValidLink(text: string): boolean {
+    if (text.length < 1) {
+        alert("Use a longer link");
+        return false;
+    }
+
+    if (text.length > MAX_LEN) {
+        alert("Link is too long");
+        return false;
+    }
+
+    try { 
+        return Boolean(new URL(text)); 
+    } catch (e) { 
+        alert("Invalid URL");
+        return false; 
+    }
 }
